@@ -64,17 +64,17 @@ STARK is an advanced security analytics platform leveraging machine learning and
 1) git clone https://github.com/GautamPataskar/STARK.git
 cd STARK
 
-2) Create Python virtual environment
+### 2) Create Python virtual environment:
 python -m venv venv
-source venv/bin/activate # Linux/Mac
-or
+source venv/bin/activate # Linux/Mac 
+OR
 .\venv\Scripts\activate # Windows
 
-3)Install dependencies
+### 3)Install dependencies
 pip install -r requirements.txt
 cd frontend/stark-dashboard && npm install && cd ../..
 
-4)Start all services:
+### 4)Start all services:
 docker-compose up -d
 
 -  Initialize database:
