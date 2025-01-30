@@ -36,3 +36,16 @@ STARK is an enterprise-grade security analytics platform leveraging advanced mac
 - Neural network-based anomaly detection
 - Automated incident response
 - Predictive threat analysis
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+- Security research community
+- Open-source ML libraries
+- Contributors and maintainers
+
+## Contact
+- Email: gautampataskar@gmail.com
+- Instagram: [@YourTwitter](https://twitter.com/YourTwitter)
+- LinkedIn: [Your LinkedIn](https://www.linkedin.com/in/gautampataskar/)
