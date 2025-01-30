@@ -80,8 +80,8 @@ docker-compose up -d
 -  Initialize database:
 psql -U postgres -f database/schema.sql
 
-5) 
-### Access Applications
+ 
+###  Access Applications
 - Frontend Dashboard: http://localhost:4200
 - API Documentation: http://localhost:5000/swagger
 - Monitoring (Grafana): http://localhost:3000
