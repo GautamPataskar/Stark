@@ -1,0 +1,111 @@
+version: '3.8'
+
+services:
+  api:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      target: api-service
+    ports:
+      - "5000:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=db;Database=stark_security;Username=stark_user;Password=your_password
+    depends_on:
+      - ml-service
+      - db
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - stark-network
+
+  ml-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: ml-service
+    ports:
+      - "8000:8000"
+    environment:
+      - MODEL_PATH=/app/models
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./models:/app/models
+      - ./logs:/app/logs
+    networks:
+      - stark-network
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: stark_security
+      POSTGRES_USER: stark_user
+      POSTGRES_PASSWORD: your_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - stark-network
+
+  frontend:
+    build:
+      context: ./frontend/stark-dashboard
+      dockerfile: Dockerfile
+    ports:
+      - "4200:80"
+    depends_on:
+      - api
+    networks:
+      - stark-network
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - stark-network
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - stark-network
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.3
+    environment:
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - stark-network
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.9.3
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - stark-network
+
+volumes:
+  pgdata:
+  grafana-storage:
+  elasticsearch-data:
+
+networks:
+  stark-network:
+    driver: bridge

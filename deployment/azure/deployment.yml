@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stark-security-analytics
+  namespace: production
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: stark-analytics
+  template:
+    metadata:
+      labels:
+        app: stark-analytics
+    spec:
+      containers:
+      - name: stark-api
+        image: stark.azurecr.io/stark-api:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Production"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+      - name: stark-ml
+        image: stark.azurecr.io/stark-ml:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: MODEL_PATH
+          value: "/models"
+        volumeMounts:
+        - name: model-storage
+          mountPath: "/models"
+      volumes:
+      - name: model-storage
+        persistentVolumeClaim:
+          claimName: model-storage-claim
